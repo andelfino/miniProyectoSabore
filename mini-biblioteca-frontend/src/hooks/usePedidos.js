@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { librosService } from "../services/libros";
+import { pedidosService } from "../services/pedidos";
 
-export function useLibros() {
-  const [libros, setLibros] = useState([]);
+export function usePedidos() {
+  const [pedidos, setPedidos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
@@ -10,8 +10,8 @@ export function useLibros() {
     setCargando(true);
     setError(null);
     try {
-      const datos = await librosService.listar();
-      setLibros(datos);
+      const datos = await pedidosService.listar();
+      setPedidos(datos);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -23,5 +23,5 @@ export function useLibros() {
     cargar();
   }, [cargar]);
 
-  return { libros, cargando, error, recargar: cargar };
+  return { pedidos, cargando, error, recargar: cargar };
 }

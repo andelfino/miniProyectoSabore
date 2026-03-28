@@ -2,39 +2,35 @@ package com.minibiblioteca.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "prestamos")
+@Table(name = "platos")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Prestamo {
+public class Plato {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDate fechaPrestamo;
+    @Column(nullable = false, length = 255)
+    private String nombre;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
+    @Column(nullable = false, length = 500)
+    private String descripcion;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "libro_id")
-    private Libro libro;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
 }

@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { usuariosService } from "../services/usuarios";
-import { librosService } from "../services/libros";
+import { platosService } from "../services/platos";
+import { formatearPrecio } from "../utils/formatear";
 
-const VACIO = { usuarioId: "", libroId: "" };
+const VACIO = { usuarioId: "", platoId: "" };
 
-export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
+export function FormularioPedido({ onGuardar, onCancelar, guardando }) {
   const [campos, setCampos] = useState(VACIO);
   const [errores, setErrores] = useState({});
 
   const [usuarios, setUsuarios] = useState([]);
-  const [librosDisponibles, setLibrosDisponibles] = useState([]);
+  const [platos, setPlatos] = useState([]);
   const [cargandoOpciones, setCargandoOpciones] = useState(true);
   const [errorOpciones, setErrorOpciones] = useState(null);
 
@@ -18,14 +19,14 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
       setCargandoOpciones(true);
       setErrorOpciones(null);
       try {
-        const [todosUsuarios, todosLibros] = await Promise.all([
+        const [todosUsuarios, todosPlatos] = await Promise.all([
           usuariosService.listar(),
-          librosService.listar(),
+          platosService.listar(),
         ]);
         setUsuarios(todosUsuarios);
-        setLibrosDisponibles(todosLibros.filter((l) => l.disponible));
+        setPlatos(todosPlatos);
       } catch {
-        setErrorOpciones("No se pudieron cargar usuarios o libros. Reintentá más tarde.");
+        setErrorOpciones("No se pudieron cargar usuarios o platos. Reintentá más tarde.");
       } finally {
         setCargandoOpciones(false);
       }
@@ -42,7 +43,7 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
   function validar() {
     const nuevosErrores = {};
     if (!campos.usuarioId) nuevosErrores.usuarioId = "Seleccioná un usuario.";
-    if (!campos.libroId) nuevosErrores.libroId = "Seleccioná un libro.";
+    if (!campos.platoId) nuevosErrores.platoId = "Seleccioná un plato.";
     return nuevosErrores;
   }
 
@@ -55,7 +56,7 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
     }
     onGuardar({
       usuarioId: Number(campos.usuarioId),
-      libroId: Number(campos.libroId),
+      platoId: Number(campos.platoId),
     });
   }
 
@@ -63,7 +64,7 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
     return (
       <div className="formulario-cargando">
         <div className="spinner" aria-label="Cargando opciones..." />
-        <p>Cargando usuarios y libros...</p>
+        <p>Cargando usuarios y platos...</p>
       </div>
     );
   }
@@ -80,7 +81,7 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
   }
 
   const sinUsuarios = usuarios.length === 0;
-  const sinLibros = librosDisponibles.length === 0;
+  const sinPlatos = platos.length === 0;
 
   return (
     <form className="formulario" onSubmit={handleSubmit} noValidate>
@@ -89,9 +90,9 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
           No hay usuarios registrados. Registrá uno primero.
         </p>
       )}
-      {sinLibros && (
+      {sinPlatos && (
         <p className="campo__mensaje-error campo__mensaje-error--global">
-          No hay libros disponibles para prestar en este momento.
+          No hay platos disponibles. Agregá uno primero.
         </p>
       )}
 
@@ -114,33 +115,29 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
             </option>
           ))}
         </select>
-        {errores.usuarioId && (
-          <p className="campo__mensaje-error">{errores.usuarioId}</p>
-        )}
+        {errores.usuarioId && <p className="campo__mensaje-error">{errores.usuarioId}</p>}
       </div>
 
       <div className="campo">
-        <label className="campo__etiqueta" htmlFor="libroId">
-          Libro disponible <span className="campo__requerido">*</span>
+        <label className="campo__etiqueta" htmlFor="platoId">
+          Plato <span className="campo__requerido">*</span>
         </label>
         <select
-          id="libroId"
-          name="libroId"
-          className={`campo__input campo__select ${errores.libroId ? "campo__input--error" : ""}`}
-          value={campos.libroId}
+          id="platoId"
+          name="platoId"
+          className={`campo__input campo__select ${errores.platoId ? "campo__input--error" : ""}`}
+          value={campos.platoId}
           onChange={actualizar}
-          disabled={guardando || sinLibros}
+          disabled={guardando || sinPlatos}
         >
-          <option value="">— Seleccioná un libro —</option>
-          {librosDisponibles.map((l) => (
-            <option key={l.id} value={l.id}>
-              {l.titulo} — {l.autor}
+          <option value="">— Seleccioná un plato —</option>
+          {platos.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombre} — {formatearPrecio(p.precio)}
             </option>
           ))}
         </select>
-        {errores.libroId && (
-          <p className="campo__mensaje-error">{errores.libroId}</p>
-        )}
+        {errores.platoId && <p className="campo__mensaje-error">{errores.platoId}</p>}
       </div>
 
       <div className="formulario__acciones">
@@ -155,9 +152,9 @@ export function FormularioPrestamo({ onGuardar, onCancelar, guardando }) {
         <button
           type="submit"
           className="btn btn-primario"
-          disabled={guardando || sinUsuarios || sinLibros}
+          disabled={guardando || sinUsuarios || sinPlatos}
         >
-          {guardando ? "Registrando..." : "Registrar préstamo"}
+          {guardando ? "Registrando..." : "Registrar pedido"}
         </button>
       </div>
     </form>

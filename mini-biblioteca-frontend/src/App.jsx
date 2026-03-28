@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { Navbar } from "./components/Navbar";
-import { LibrosPage } from "./pages/LibrosPage";
+import { PlatosPage } from "./pages/PlatosPage";
 import { UsuariosPage } from "./pages/UsuariosPage";
-import { PrestamosPage } from "./pages/PrestamosPage";
+import { PedidosPage } from "./pages/PedidosPage";
 
 const PAGINAS = {
-  libros: LibrosPage,
+  platos: PlatosPage,
   usuarios: UsuariosPage,
-  prestamos: PrestamosPage,
+  pedidos: PedidosPage,
 };
 
 function App() {
-  const [paginaActiva, setPaginaActiva] = useState("libros");
+  const [paginaActiva, setPaginaActiva] = useState("pedidos");
 
-  const PaginaActual = PAGINAS[paginaActiva] ?? LibrosPage;
+  const PaginaActual = PAGINAS[paginaActiva] ?? PedidosPage;
 
   return (
     <div className="layout">
