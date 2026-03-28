@@ -1,8 +1,8 @@
 package com.minibiblioteca.controller;
 
-import com.minibiblioteca.dto.LibroRequest;
-import com.minibiblioteca.dto.LibroResponse;
-import com.minibiblioteca.service.LibroService;
+import com.minibiblioteca.dto.PlatoRequest;
+import com.minibiblioteca.dto.PlatoResponse;
+import com.minibiblioteca.service.PlatoService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,34 +18,34 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/libros")
-public class LibroController {
+@RequestMapping("/api/platos")
+public class PlatoController {
 
-    private final LibroService libroService;
+    private final PlatoService platoService;
 
-    public LibroController(LibroService libroService) {
-        this.libroService = libroService;
+    public PlatoController(PlatoService platoService) {
+        this.platoService = platoService;
     }
 
     @GetMapping
-    public List<LibroResponse> listar() {
-        return libroService.listar();
+    public List<PlatoResponse> listar() {
+        return platoService.listar();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LibroResponse crear(@Valid @RequestBody LibroRequest request) {
-        return libroService.crear(request);
+    public PlatoResponse crear(@Valid @RequestBody PlatoRequest request) {
+        return platoService.crear(request);
     }
 
     @PutMapping("/{id}")
-    public LibroResponse actualizar(@PathVariable Long id, @Valid @RequestBody LibroRequest request) {
-        return libroService.actualizar(id, request);
+    public PlatoResponse actualizar(@PathVariable Long id, @Valid @RequestBody PlatoRequest request) {
+        return platoService.actualizar(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
-        libroService.eliminar(id);
+        platoService.eliminar(id);
     }
 }

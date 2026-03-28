@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { formatearDisponibilidad } from "../utils/formatear";
+import { formatearPrecio, truncarTexto } from "../utils/formatear";
 
-export function LibroCard({ libro, onEliminar }) {
+export function PlatoCard({ plato, onEliminar }) {
   const [confirmando, setConfirmando] = useState(false);
   const [eliminando, setEliminando] = useState(false);
 
@@ -11,32 +11,24 @@ export function LibroCard({ libro, onEliminar }) {
       return;
     }
     setEliminando(true);
-    await onEliminar(libro.id);
+    await onEliminar(plato.id);
     setEliminando(false);
     setConfirmando(false);
   }
 
   return (
-    <article className="libro-card">
-      <div className="libro-card__encabezado">
-        <h3 className="libro-card__titulo">{libro.titulo}</h3>
-        <span
-          className={`badge ${libro.disponible ? "badge--verde" : "badge--rojo"}`}
-        >
-          {formatearDisponibilidad(libro.disponible)}
-        </span>
+    <article className="plato-card">
+      <div className="plato-card__encabezado">
+        <h3 className="plato-card__nombre">{plato.nombre}</h3>
+        <span className="plato-card__precio">{formatearPrecio(plato.precio)}</span>
       </div>
-      <p className="libro-card__autor">{libro.autor}</p>
-      {libro.isbn && (
-        <p className="libro-card__isbn">
-          <span className="label">ISBN:</span> {libro.isbn}
-        </p>
-      )}
+      <p className="plato-card__descripcion">{truncarTexto(plato.descripcion, 80)}</p>
+
       {onEliminar && (
-        <div className="libro-card__acciones">
+        <div className="plato-card__acciones">
           {confirmando ? (
             <>
-              <span className="libro-card__confirmar-texto">¿Confirmar?</span>
+              <span className="plato-card__confirmar-texto">¿Confirmar?</span>
               <button
                 className="btn btn-peligro btn-sm"
                 onClick={handleEliminar}
@@ -56,7 +48,7 @@ export function LibroCard({ libro, onEliminar }) {
             <button
               className="btn btn-ghost btn-sm"
               onClick={handleEliminar}
-              aria-label={`Eliminar ${libro.titulo}`}
+              aria-label={`Eliminar ${plato.nombre}`}
             >
               Eliminar
             </button>

@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { useLibros } from "../hooks/useLibros";
-import { librosService } from "../services/libros";
-import { ListaLibros } from "../components/ListaLibros";
+import { usePedidos } from "../hooks/usePedidos";
+import { pedidosService } from "../services/pedidos";
+import { ListaPedidos } from "../components/ListaPedidos";
 import { EstadoCarga } from "../components/EstadoCarga";
 import { Modal } from "../components/Modal";
-import { FormularioLibro } from "../components/FormularioLibro";
+import { FormularioPedido } from "../components/FormularioPedido";
 
-export function LibrosPage() {
-  const { libros, cargando, error, recargar } = useLibros();
+export function PedidosPage() {
+  const { pedidos, cargando, error, recargar } = usePedidos();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [errorMutacion, setErrorMutacion] = useState(null);
 
-  async function handleCrear(datos) {
+  async function handleRegistrar(datos) {
     setGuardando(true);
     setErrorMutacion(null);
     try {
-      await librosService.crear(datos);
+      await pedidosService.registrar(datos);
       setModalAbierto(false);
       recargar();
     } catch (err) {
@@ -26,12 +26,12 @@ export function LibrosPage() {
     }
   }
 
-  async function handleEliminar(id) {
+  async function handleCambiarEstado(id, estado) {
     try {
-      await librosService.eliminar(id);
+      await pedidosService.actualizarEstado(id, estado);
       recargar();
     } catch (err) {
-      alert(`No se pudo eliminar el libro: ${err.message}`);
+      alert(`No se pudo actualizar el pedido: ${err.message}`);
     }
   }
 
@@ -41,20 +41,20 @@ export function LibrosPage() {
     setErrorMutacion(null);
   }
 
-  const mostrarEstado = cargando || error || libros.length === 0;
+  const mostrarEstado = cargando || error || pedidos.length === 0;
 
   return (
     <main className="pagina">
       <div className="pagina__encabezado pagina__encabezado--con-accion">
         <div>
-          <h1 className="pagina__titulo">Libros</h1>
-          <p className="pagina__subtitulo">Catálogo de libros disponibles</p>
+          <h1 className="pagina__titulo">Pedidos</h1>
+          <p className="pagina__subtitulo">Gestión de pedidos en curso</p>
         </div>
         <button
           className="btn btn-primario"
           onClick={() => setModalAbierto(true)}
         >
-          + Nuevo libro
+          + Nuevo pedido
         </button>
       </div>
 
@@ -62,27 +62,27 @@ export function LibrosPage() {
         <EstadoCarga
           cargando={cargando}
           error={error}
-          vacio={!cargando && !error && libros.length === 0}
+          vacio={!cargando && !error && pedidos.length === 0}
           onReintentar={recargar}
         />
       ) : (
         <>
           <p className="pagina__conteo">
-            {libros.length} libro{libros.length !== 1 ? "s" : ""} en el catálogo
+            {pedidos.length} pedido{pedidos.length !== 1 ? "s" : ""} registrado{pedidos.length !== 1 ? "s" : ""}
           </p>
-          <ListaLibros libros={libros} onEliminar={handleEliminar} />
+          <ListaPedidos pedidos={pedidos} onCambiarEstado={handleCambiarEstado} />
         </>
       )}
 
       {modalAbierto && (
-        <Modal titulo="Nuevo libro" onCerrar={handleCerrarModal}>
+        <Modal titulo="Nuevo pedido" onCerrar={handleCerrarModal}>
           {errorMutacion && (
             <p className="campo__mensaje-error campo__mensaje-error--global">
               {errorMutacion}
             </p>
           )}
-          <FormularioLibro
-            onGuardar={handleCrear}
+          <FormularioPedido
+            onGuardar={handleRegistrar}
             onCancelar={handleCerrarModal}
             guardando={guardando}
           />

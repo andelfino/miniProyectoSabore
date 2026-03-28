@@ -1,15 +1,15 @@
 export function Navbar({ paginaActiva, onNavegar }) {
   const links = [
-    { id: "libros", label: "Libros" },
+    { id: "pedidos", label: "Pedidos" },
+    { id: "platos", label: "Platos" },
     { id: "usuarios", label: "Usuarios" },
-    { id: "prestamos", label: "Préstamos" },
   ];
 
   return (
     <header className="navbar">
       <div className="navbar__marca">
-        <span className="navbar__icono">📚</span>
-        <span className="navbar__nombre">Mini Biblioteca</span>
+        <span className="navbar__icono" aria-hidden="true">🛵</span>
+        <span className="navbar__nombre">Sabore</span>
       </div>
       <nav className="navbar__nav">
         {links.map((link) => (

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
-import { prestamosService } from "../services/prestamos";
+import { platosService } from "../services/platos";
 
-export function usePrestamos() {
-  const [prestamos, setPrestamos] = useState([]);
+export function usePlatos() {
+  const [platos, setPlatos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
@@ -10,8 +10,8 @@ export function usePrestamos() {
     setCargando(true);
     setError(null);
     try {
-      const datos = await prestamosService.listar();
-      setPrestamos(datos);
+      const datos = await platosService.listar();
+      setPlatos(datos);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -23,5 +23,5 @@ export function usePrestamos() {
     cargar();
   }, [cargar]);
 
-  return { prestamos, cargando, error, recargar: cargar };
+  return { platos, cargando, error, recargar: cargar };
 }
